@@ -32,15 +32,15 @@ export default function Navbar() {
                   <NavigationMenuTrigger className="text-muted-foreground">{link.title}</NavigationMenuTrigger>
                   <NavigationMenuContent>
                     <ul className="grid w-[400px] grid-cols-2">
-                      {Object.entries(link.sublinks).map(([category, data], i2) => (
-                        <li key={i2}>
+                      {categories.map(category => (
+                        <li key={category.slug}>
                           <NavigationMenuLink asChild>
-                            <Link href={`/${category}`}>
-                              <div className="text-sm leading-none font-medium">{data.title}</div>
+                            <Link href={`/${category.slug}`}>
+                              <div className="text-sm leading-none font-medium">{category.title}</div>
                               <ul>
-                                {Object.keys(data.subcategories).map((subcategory, i3) => (
+                                {category.subcategories.map((subcategory, i3) => (
                                   <li key={i3} className="text-muted-foreground">
-                                    {subcategory}
+                                    {subcategory.title}
                                   </li>
                                 ))}
                               </ul>
