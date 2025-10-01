@@ -1,12 +1,8 @@
-import { Button } from '@/components/ui/button'
-
 export default function Home() {
-  const title = 'Dining Room'
-  return (
-    <div>
-      <p>{JSON.stringify({ data: title.split(' ').join('-').toLowerCase() })}</p>
-      <div>home</div>
-      <Button>Hello</Button>
-    </div>
-  )
+  const now = Date.now()
+  const lastUsed = 1759291282145
+
+  const secondsElapsed = (now - lastUsed) / 1000
+  const elapsed = now - lastUsed
+  return <pre>{JSON.stringify({ now, lastUsed, secondsElapsed, elapsed: Math.floor(elapsed / 30_000) }, null, 2)}</pre>
 }

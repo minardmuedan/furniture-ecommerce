@@ -20,7 +20,7 @@ export default function Navbar() {
   ]
 
   return (
-    <header className="flex h-14 w-full items-center justify-between border-b">
+    <header className="flex h-14 w-full items-center justify-between border-b px-5">
       <Link href="/">minard</Link>
 
       <NavigationMenu>
@@ -60,6 +60,7 @@ export default function Navbar() {
           ))}
         </NavigationMenuList>
       </NavigationMenu>
+      <Link href="/signup">Signup</Link>
     </header>
   )
 }
