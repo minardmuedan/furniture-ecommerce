@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/navigation-menu'
 import categories from '@/lib/categories'
 import Link from 'next/link'
+import { buttonVariants } from './ui/button'
 
 export default function Navbar() {
   const navlinks = [
@@ -60,7 +61,9 @@ export default function Navbar() {
           ))}
         </NavigationMenuList>
       </NavigationMenu>
-      <Link href="/signup">Signup</Link>
+      <Link href="/signup" className={buttonVariants()}>
+        Signup
+      </Link>
     </header>
   )
 }

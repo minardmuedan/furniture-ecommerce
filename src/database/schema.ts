@@ -1,3 +1,4 @@
+import { relations } from 'drizzle-orm'
 import { boolean, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core'
 
 export const usersTable = pgTable('users', {
@@ -22,6 +23,10 @@ export const sessionsTable = pgTable('sessions', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
   expiresAt: timestamp('updated_at').notNull(),
 })
+
+export const sessionRelations = relations(sessionsTable, ({ one }) => ({
+  user: one(usersTable, { fields: [sessionsTable.userId], references: [usersTable.id] }),
+}))
 
 export const emailVerificationsTable = pgTable('email-verifications', {
   id: varchar().primaryKey(),

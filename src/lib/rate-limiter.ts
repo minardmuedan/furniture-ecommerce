@@ -6,35 +6,36 @@ const records = new Map<string, RecordData>()
 export function createMemoryRateLimiter(maxAttempts = 8, refill = { refilledAttempt: 5, perSeconds: 30 }) {
   const refillPerMs = refill.perSeconds * 1000
 
-  return function allow(key: string) {
+  return async function allow(key: string) {
     const now = Date.now()
     const record: RecordData = records.get(key) ?? { attempt: maxAttempts, lastUsed: now }
 
     const elapsed = Math.floor((now - record.lastUsed) / refillPerMs)
-    const newAttempt = record.attempt + elapsed * refill.refilledAttempt
-    const recordAttempt = (record.attempt = Math.min(maxAttempts, newAttempt))
+    if (elapsed > 0) record.attempt = Math.min(maxAttempts, record.attempt + elapsed * refill.refilledAttempt)
 
-    const allowed = recordAttempt > 0
-    if (!allowed) disallow()
+    if (record.attempt <= 0) disallow(record, refillPerMs)
 
     record.attempt -= 1
     record.lastUsed = now
     records.set(key, record)
 
-    if (recordAttempt === 1) disallow()
-    return { attempt: record.attempt }
-
-    function disallow() {
-      throw new RateLimit(Math.floor((record.lastUsed + refillPerMs - now) / 1000))
-    }
+    return { record, refillPerMs }
   }
+}
+
+export function disallow(record: RecordData, refillPerMs: number) {
+  const now = Date.now()
+  const nextSubmit = record.lastUsed + refillPerMs
+  throw new RateLimit({ nextSubmit, remainingSeconds: Math.ceil((nextSubmit - now) / 1000) })
 }
 
 export class RateLimit {
   remainingSeconds: number
+  nextSubmit: number
 
-  constructor(remainingSeconds: number) {
-    this.remainingSeconds = remainingSeconds
+  constructor(arg: { remainingSeconds: number; nextSubmit: number }) {
+    this.remainingSeconds = arg.remainingSeconds
+    this.nextSubmit = arg.nextSubmit
   }
 }
 
