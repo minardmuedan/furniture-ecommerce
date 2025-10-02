@@ -38,6 +38,10 @@ export const emailVerificationsTable = pgTable('email-verifications', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
 })
 
+export const emailVerificationRelations = relations(emailVerificationsTable, ({ one }) => ({
+  user: one(usersTable, { fields: [emailVerificationsTable.userId], references: [usersTable.id] }),
+}))
+
 // export const passwordVerificationsTable = pgTable('password-verifications', {
 //   id: varchar().primaryKey(),
 //   userId: varchar('user_id')

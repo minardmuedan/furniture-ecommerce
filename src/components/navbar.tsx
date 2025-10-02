@@ -1,3 +1,5 @@
+'use client'
+
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -10,8 +12,11 @@ import {
 import categories from '@/lib/categories'
 import Link from 'next/link'
 import { buttonVariants } from './ui/button'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function Navbar() {
+  const { user, isGettingUser } = useAuth()
+
   const navlinks = [
     { title: 'home', href: '/' },
     { title: 'categories', sublinks: categories },
@@ -61,9 +66,16 @@ export default function Navbar() {
           ))}
         </NavigationMenuList>
       </NavigationMenu>
-      <Link href="/signup" className={buttonVariants()}>
-        Signup
-      </Link>
+
+      {isGettingUser ? (
+        <p className="text-muted-foreground text-sm">getting the user ...</p>
+      ) : user ? (
+        <p className="text-muted-foreground text-sm">hello, {user.username}</p>
+      ) : (
+        <Link href="/signup" className={buttonVariants()}>
+          Signup
+        </Link>
+      )}
     </header>
   )
 }

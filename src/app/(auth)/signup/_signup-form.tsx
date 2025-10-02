@@ -1,19 +1,17 @@
 'use client'
 
-import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import useCountDown from '@/hooks/use-countdown'
-import useIsHydrated from '@/hooks/use-hydrated'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { signupSchema, type Signup } from './_schema'
+import AuthButton from '../_auth-button'
 import { signupAction } from './_action'
+import { signupSchema, type Signup } from './_schema'
+import { useAuthProvider } from '../_auth-provider'
 
-export default function SignupForm({ rateLimitDate }: { rateLimitDate: number }) {
-  const isHydrated = useIsHydrated()
-  const { timer, setTimer } = useCountDown()
+export default function SignupForm() {
+  const { setRateLimit } = useAuthProvider('signup')
 
   const form = useForm<Signup>({
     resolver: zodResolver(signupSchema),
@@ -27,10 +25,6 @@ export default function SignupForm({ rateLimitDate }: { rateLimitDate: number })
     { name: 'confirmPassword', label: 'Confirm Password', type: 'password', placeholder: '********' },
   ] as const
 
-  useEffect(() => {
-    if (rateLimitDate) setTimer(Math.ceil((rateLimitDate - Date.now()) / 1000))
-  }, [])
-
   async function onSubmit(values: Signup) {
     const action = await signupAction(values)
     if (!action.success) {
@@ -40,7 +34,7 @@ export default function SignupForm({ rateLimitDate }: { rateLimitDate: number })
         })
       }
 
-      if (action.type === 'rate_limit') return setTimer(action.data.remainingSeconds)
+      if (action.type === 'rate_limit') return setRateLimit(action.data.nextSubmit)
 
       form.setError('root', { message: action.message })
     }
@@ -65,9 +59,9 @@ export default function SignupForm({ rateLimitDate }: { rateLimitDate: number })
         />
       ))}
 
-      <Button type="submit" disabled={!isHydrated || timer > 0} className="w-full">
-        {timer > 0 ? `try again after ${timer} second/s` : 'Sign Up'}
-      </Button>
+      <AuthButton auth="signup" type="submit" disabled={form.formState.isSubmitting} className="w-full">
+        Sign Up
+      </AuthButton>
     </Form>
   )
 }

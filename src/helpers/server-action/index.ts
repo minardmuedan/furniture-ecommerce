@@ -10,7 +10,7 @@ export default function createServerAction<TArgs extends unknown[]>(fn: (...fnAr
     await fn(...args).catch(err => {
       if (isRedirectError(err)) throw err
       if (err instanceof ZodError) return { success: false, type: 'validation_error', fields: flattenError(err).fieldErrors }
-      if (err instanceof RateLimit) return { success: false, type: 'rate_limit', data: { remainingSeconds: err.remainingSeconds } }
+      if (err instanceof RateLimit) return { success: false, type: 'rate_limit', data: { nextSubmit: err.nextSubmit } }
       if (err instanceof CustomError) return { success: false, ...err }
 
       console.log('ERROR IN SERVER ACTION: ', err)
@@ -18,7 +18,7 @@ export default function createServerAction<TArgs extends unknown[]>(fn: (...fnAr
     })
 }
 
-export function error(err: { type: 'custom_error'; message: string } | { type: 'validation_error'; fields: Record<string, string> }) {
+export function error(err: { type: 'custom_error'; message: string } | { type: 'validation_error'; fields: Record<string, string> }): never {
   if (err.type === 'validation_error') {
     throw new ZodError(Object.entries(err.fields).map(([path, message]) => ({ code: 'custom', path: [path], message })))
   }

@@ -23,15 +23,17 @@ export function createServerActionWithRateLimiter<TArgs extends unknown[]>(
   return createServerAction(async (...args: TArgs) => {
     const rateLimitId = identifier ?? (await getIpAddress())
 
-    const { record, refillPerMs } = await rateLimiter(`${key}.${rateLimitId}`).catch(async err => {
-      if (err instanceof RateLimit && withCookie) {
-        await setCookie(key, `${err.nextSubmit}`, { maxAge: err.remainingSeconds })
-      }
-      throw err
-    })
+    const { record, refillPerMs } = await rateLimiter(`${key}.${rateLimitId}`)
 
-    return await fn(record.attempt, ...args).finally(() => {
-      if (record.attempt === 0) disallow(record, refillPerMs)
+    return await fn(record.attempt, ...args).finally(async () => {
+      if (record.attempt <= 0) {
+        if (withCookie) {
+          const now = Date.now()
+          const nextSubmt = record.lastUsed + refillPerMs
+          await setCookie(key, `${nextSubmt}`, { maxAge: Math.ceil((nextSubmt - now) / 1000) })
+        }
+        disallow(record, refillPerMs)
+      }
     })
   })
 }
