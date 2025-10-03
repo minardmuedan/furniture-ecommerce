@@ -1,13 +1,5 @@
 import z from 'zod'
-
-const emailSchema = z.email('Enter a valid email address')
-
-const passwordSchema = z
-  .string()
-  .min(6, 'Password must be at least 6 characters')
-  .max(64, 'Password must be at most 64 characters')
-  .regex(/[a-zA-Z]/, 'Password must contain a letter')
-  .regex(/[0-9]/, 'Password must contain a number')
+import { emailSchema, passwordSchema } from '../_auth-schema'
 
 export const signupSchema = z
   .object({

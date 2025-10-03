@@ -30,8 +30,8 @@ export default function SignupForm() {
     const action = await signupAction(values)
     if (!action.success) {
       if (action.type === 'validation_error') {
-        return Object.entries(action.fields).map(([key, error]) => {
-          form.setError(key as keyof Signup, { message: error[0] }, { shouldFocus: true })
+        return Object.entries(action.fields).map(([key, errMsg]) => {
+          form.setError(key as keyof Signup, { message: errMsg[0] }, { shouldFocus: true })
         })
       }
 
@@ -40,7 +40,7 @@ export default function SignupForm() {
       form.setError('root', { message: action.message })
     } else {
       setNextSubmitOf('resendEmailVerification', Date.now() + 30_000)
-      router.replace('/signup/verification')
+      router.push('/signup/verification')
     }
   }
 

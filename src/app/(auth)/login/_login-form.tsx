@@ -11,6 +11,7 @@ import { loginAction } from './_login-action'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { useQueryClient } from '@tanstack/react-query'
+import Link from 'next/link'
 
 export default function LoginForm() {
   const router = useRouter()
@@ -21,11 +22,6 @@ export default function LoginForm() {
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '' },
   })
-
-  const formFields = [
-    { name: 'email', label: 'Email ', type: 'email', placeholder: 'minard@example.com' },
-    { name: 'password', label: 'Password', type: 'password', placeholder: '********' },
-  ] as const
 
   async function onSubmit(values: Login) {
     const action = await loginAction(values)
@@ -48,22 +44,37 @@ export default function LoginForm() {
 
   return (
     <Form formHook={form} onSubmit={form.handleSubmit(onSubmit)}>
-      {formFields.map(({ name, label, ...formfield }, i) => (
-        <FormField
-          key={i}
-          control={form.control}
-          name={name}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>{label}</FormLabel>
-              <FormControl>
-                <Input {...formfield} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-      ))}
+      <FormField
+        control={form.control}
+        name="email"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Email</FormLabel>
+            <FormControl>
+              <Input type="email" placeholder="minard@example.com" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="password"
+        render={({ field }) => (
+          <FormItem>
+            <div className="flex items-center justify-between">
+              <FormLabel>Password</FormLabel>
+              <Link tabIndex={-1} href="/forgot-password" className="hover:text-primary text-muted-foreground text-sm font-medium transition-colors">
+                forgot password?
+              </Link>
+            </div>
+            <FormControl>
+              <Input type="password" placeholder="********" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
       <RateLimitButton auth="login" type="submit" disabled={form.formState.isSubmitting} className="w-full">
         Login

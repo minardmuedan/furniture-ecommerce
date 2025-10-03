@@ -3,8 +3,8 @@ import { getEmailVerificationByTokenDb } from '@/database/models/email-verificat
 import { verifyJWT } from '@/lib/auth'
 import { ArrowLeft, ClockAlert } from 'lucide-react'
 import { notFound } from 'next/navigation'
-import GenerateEmailVerificationTokenButton from './_generate-token-button'
-import VerifyEmailButton from './_verify-email-button'
+import VerifyEmailButton from './_button-components/verify-email-button'
+import GenerateEmailVerificationTokenButton from './_button-components/generate-token-button'
 
 export default async function VerifyEmailPage({ searchParams }: { searchParams: Promise<{ token: string | undefined }> }) {
   const { token } = await searchParams

@@ -5,6 +5,8 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
   const signupLimitDate = await getCookie('signup-limit')
   const resendEmailVerificationDate = await getCookie('resend-email-verification-limit')
   const loginLimitDate = await getCookie('login-limit')
+  const forgotPasswordLimitDate = await getCookie('password-verification-limit')
+  const resendPasswordVerificationLimitDate = await getCookie('resend-password-verification-limit')
 
   return (
     <RateLimitProvider
@@ -12,6 +14,8 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
         signup: Number(signupLimitDate || 0),
         resendEmailVerification: Number(resendEmailVerificationDate || 0),
         login: Number(loginLimitDate || 0),
+        forgotPassword: Number(forgotPasswordLimitDate || 0),
+        resendPasswordVerification: Number(resendPasswordVerificationLimitDate || 0),
       }}
     >
       <div className="min-h-svh-minusNav flex flex-col items-center justify-center py-5">{children}</div>
