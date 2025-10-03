@@ -6,32 +6,33 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import RateLimitButton from '../_ratelimit-button'
 import { useRateLimitContext } from '../_ratelimit-provider'
-import { signupAction } from './_signup-action'
-import { signupSchema, type Signup } from './_signup-schema'
+import { Login, loginSchema } from './_login-schema'
+import { loginAction } from './_login-action'
 import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { useQueryClient } from '@tanstack/react-query'
 
-export default function SignupForm() {
+export default function LoginForm() {
   const router = useRouter()
-  const { setNextSubmit, setNextSubmitOf } = useRateLimitContext('signup')
+  const queryClient = useQueryClient()
+  const { setNextSubmit } = useRateLimitContext('login')
 
-  const form = useForm<Signup>({
-    resolver: zodResolver(signupSchema),
-    defaultValues: { username: '', email: '', password: '', confirmPassword: '' },
+  const form = useForm<Login>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: '', password: '' },
   })
 
   const formFields = [
-    { name: 'username', label: 'Username', type: 'text', placeholder: 'minard' },
     { name: 'email', label: 'Email ', type: 'email', placeholder: 'minard@example.com' },
     { name: 'password', label: 'Password', type: 'password', placeholder: '********' },
-    { name: 'confirmPassword', label: 'Confirm Password', type: 'password', placeholder: '********' },
   ] as const
 
-  async function onSubmit(values: Signup) {
-    const action = await signupAction(values)
+  async function onSubmit(values: Login) {
+    const action = await loginAction(values)
     if (!action.success) {
       if (action.type === 'validation_error') {
         return Object.entries(action.fields).map(([key, error]) => {
-          form.setError(key as keyof Signup, { message: error[0] }, { shouldFocus: true })
+          form.setError(key as keyof Login, { message: error[0] }, { shouldFocus: true })
         })
       }
 
@@ -39,8 +40,9 @@ export default function SignupForm() {
 
       form.setError('root', { message: action.message })
     } else {
-      setNextSubmitOf('resendEmailVerification', Date.now() + 30_000)
-      router.replace('/signup/verification')
+      queryClient.invalidateQueries({ queryKey: ['session'] })
+      toast.success(action.message, { icon: '👋' })
+      router.replace('/')
     }
   }
 
@@ -63,8 +65,8 @@ export default function SignupForm() {
         />
       ))}
 
-      <RateLimitButton auth="signup" type="submit" disabled={form.formState.isSubmitting} className="w-full">
-        Sign Up
+      <RateLimitButton auth="login" type="submit" disabled={form.formState.isSubmitting} className="w-full">
+        Login
       </RateLimitButton>
     </Form>
   )

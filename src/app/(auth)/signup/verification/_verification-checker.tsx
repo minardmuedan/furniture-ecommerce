@@ -14,18 +14,18 @@ export default function EmailVerificationChecker() {
   const { data } = useQuery<ApiReturnType>({
     queryKey: ['check-verification'],
     queryFn: async () => await clientFetch('/auth/check-verification'),
-    refetchInterval: ({ state: { data } }) => (data?.continue === false ? false : 5000),
+    refetchInterval: ({ state: { data } }) => (data?.continue === false ? false : 3000),
   })
 
   useEffect(() => {
     if (data && data.continue === false) {
       if (!data.success) {
         toast.error(data.message)
-        return router.replace('/signup')
+        return router.replace('/login')
       }
 
       toast.success(data.message)
-      queryClient.invalidateQueries({ queryKey: ['auth'] })
+      queryClient.invalidateQueries({ queryKey: ['session'] })
       router.replace('/')
     }
   }, [data])

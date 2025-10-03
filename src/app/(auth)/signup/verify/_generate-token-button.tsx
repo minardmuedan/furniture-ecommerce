@@ -10,7 +10,7 @@ import { useRateLimitContext } from '../../_ratelimit-provider'
 
 export default function GenerateEmailVerificationTokenButton({ emailVerificationId }: { emailVerificationId: string }) {
   const router = useRouter()
-  const { setNextSubmit } = useRateLimitContext('resendEmailVerification')
+  const { setNextSubmitOf } = useRateLimitContext('resendEmailVerification')
 
   const { mutate, isPending } = useMutation({
     mutationKey: ['resend-email-verification'],
@@ -22,8 +22,8 @@ export default function GenerateEmailVerificationTokenButton({ emailVerification
           if (data.type === 'custom_error') router.replace('/signup')
         }
       } else {
+        setNextSubmitOf('resendEmailVerification', Date.now() + 30_000)
         router.replace('/signup/verification')
-        setNextSubmit(Date.now() + 1000 * 30)
       }
     },
   })

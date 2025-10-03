@@ -10,9 +10,9 @@ export type ClientAuthUser = {
 }
 
 export const useAuth = () => {
-  const { data: user, isLoading: isGettingUser } = useQuery<AuthCClientAuthUserlientUser>({
-    queryKey: ['auth'],
-    queryFn: async () => await clientFetch('/auth'),
+  const { data: user, isLoading: isGettingUser } = useQuery<ClientAuthUser>({
+    queryKey: ['session'],
+    queryFn: async () => await clientFetch('/auth/session'),
   })
 
   return { user, isGettingUser }

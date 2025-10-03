@@ -25,7 +25,7 @@ export default async function VerifyEmailPage({ searchParams }: { searchParams: 
         <p className="text-muted-foreground mb-5 text-sm">Go to signup page or generate another token</p>
 
         <div className="flex items-center gap-2">
-          <ButtonLink href="/signup" variant="link">
+          <ButtonLink href="/signup" variant="secondary">
             <ArrowLeft /> back to Signup
           </ButtonLink>
 

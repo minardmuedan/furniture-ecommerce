@@ -1,6 +1,6 @@
 import { generateSecureRandomString, signJWT, verifyJWT } from './auth'
 
-const EXPIRES_IN_MINUTE = 30
+const EXPIRES_IN_MINUTE = 1
 
 export async function generateToken() {
   const token = generateSecureRandomString()

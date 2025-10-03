@@ -13,7 +13,7 @@ export default function VerifyEmailButton({ token }: { token: string }) {
     mutationFn: async () => await verifyEmailAction(token),
     onSuccess: data => {
       if (data.success) {
-        toast.success(data.message)
+        toast.success(data.message, { icon: '🎉' })
         return router.replace(data.redirectTo ?? '/')
       }
 

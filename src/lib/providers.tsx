@@ -17,4 +17,4 @@ export function TanstackQueryProvider({ children }: { children: React.ReactNode 
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }
 
-type QueryKeys = 'auth' | 'check-verification'
+type QueryKeys = 'session' | 'check-verification'

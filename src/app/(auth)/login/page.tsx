@@ -1,23 +1,23 @@
 import { ButtonLink } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ArrowRight } from 'lucide-react'
-import SignupForm from './_signup-form'
+import { ArrowLeft } from 'lucide-react'
+import LoginForm from './_login-form'
 
-export default function SignupPage() {
+export default function LoginPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle>Signup</CardTitle>
+        <CardTitle>Login</CardTitle>
         <CardDescription>Complete the credentials to continue</CardDescription>
 
         <CardAction>
-          <ButtonLink href="/login" variant="link">
-            Login <ArrowRight />
+          <ButtonLink href="/signup" variant="link">
+            <ArrowLeft /> Signup
           </ButtonLink>
         </CardAction>
       </CardHeader>
       <CardContent>
-        <SignupForm />
+        <LoginForm />
       </CardContent>
     </Card>
   )

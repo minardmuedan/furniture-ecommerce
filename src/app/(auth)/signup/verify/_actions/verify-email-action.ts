@@ -4,7 +4,7 @@ import { deleteEmailVerificationDb, getEmailVerificationByTokenDb } from '@/data
 import { updateUserDb } from '@/database/models/users'
 import createServerAction, { error } from '@/helpers/server-action'
 import { verifyJWT } from '@/lib/auth'
-import { deleteCookie } from '@/lib/headers'
+import { deleteCookie, setCookie } from '@/lib/headers'
 import { getSession } from '@/lib/session'
 
 export const verifyEmailAction = createServerAction(async (jwtToken: string) => {
@@ -21,5 +21,6 @@ export const verifyEmailAction = createServerAction(async (jwtToken: string) => 
   const { session } = await getSession()
   if (session) return { success: true, message: `Email verified successful — welcome, ${session.user.username}` }
 
+  await setCookie('login', 'initial', { maxAge: 60 * 15 })
   return { success: true, message: 'Email verified successfully, Please login', redirectTo: '/login' }
 })

@@ -9,10 +9,11 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu'
+import { useAuth } from '@/hooks/use-auth'
 import categories from '@/lib/categories'
 import Link from 'next/link'
-import { buttonVariants } from './ui/button'
-import { useAuth } from '@/hooks/use-auth'
+import { ButtonLink } from './ui/button'
+import LogoutButton from '@/app/(auth)/_logout/logout-button'
 
 export default function Navbar() {
   const { user, isGettingUser } = useAuth()
@@ -69,12 +70,23 @@ export default function Navbar() {
 
       {isGettingUser ? (
         <p className="text-muted-foreground text-sm">getting the user ...</p>
-      ) : user ? (
-        <p className="text-muted-foreground text-sm">hello, {user.username}</p>
       ) : (
-        <Link href="/signup" className={buttonVariants()}>
-          Signup
-        </Link>
+        <div className="flex gap-1">
+          {user ? (
+            <>
+              <p className="text-muted-foreground text-sm">hello, {user.username}</p>
+              <LogoutButton variant="destructive" />
+            </>
+          ) : (
+            <>
+              <ButtonLink href="/signup" variant="link">
+                Signup
+              </ButtonLink>
+
+              <ButtonLink href="/login">Login</ButtonLink>
+            </>
+          )}
+        </div>
       )}
     </header>
   )
