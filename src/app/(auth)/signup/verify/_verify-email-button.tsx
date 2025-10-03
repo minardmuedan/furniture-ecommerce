@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button'
 import { useMutation } from '@tanstack/react-query'
-import { verifyEmailAction } from './_action'
+import { verifyEmailAction } from './_actions/verify-email-action'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 

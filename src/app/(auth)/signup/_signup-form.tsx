@@ -2,16 +2,15 @@
 
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import useCountDown from '@/hooks/use-countdown'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import AuthButton from '../_auth-button'
-import { signupAction } from './_action'
-import { signupSchema, type Signup } from './_schema'
-import { useAuthProvider } from '../_auth-provider'
+import RateLimitButton from '../_ratelimit-button'
+import { useRateLimitContext } from '../_ratelimit-provider'
+import { signupAction } from './_signup-action'
+import { signupSchema, type Signup } from './_signup-schema'
 
 export default function SignupForm() {
-  const { setRateLimit } = useAuthProvider('signup')
+  const { setNextSubmit } = useRateLimitContext('signup')
 
   const form = useForm<Signup>({
     resolver: zodResolver(signupSchema),
@@ -34,7 +33,7 @@ export default function SignupForm() {
         })
       }
 
-      if (action.type === 'rate_limit') return setRateLimit(action.data.nextSubmit)
+      if (action.type === 'rate_limit') return setNextSubmit(action.data.nextSubmit)
 
       form.setError('root', { message: action.message })
     }
@@ -59,9 +58,9 @@ export default function SignupForm() {
         />
       ))}
 
-      <AuthButton auth="signup" type="submit" disabled={form.formState.isSubmitting} className="w-full">
+      <RateLimitButton auth="signup" type="submit" disabled={form.formState.isSubmitting} className="w-full">
         Sign Up
-      </AuthButton>
+      </RateLimitButton>
     </Form>
   )
 }

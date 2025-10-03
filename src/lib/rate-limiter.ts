@@ -24,8 +24,7 @@ export function createMemoryRateLimiter(maxAttempts = 8, refill = { refilledAtte
 }
 
 export function disallow(record: RecordData, refillPerMs: number): never {
-  const now = Date.now()
-  throw new RateLimit({ nextSubmit: (record.lastUsed + refillPerMs - now) / 1000 })
+  throw new RateLimit({ nextSubmit: record.lastUsed + refillPerMs })
 }
 
 export class RateLimit {

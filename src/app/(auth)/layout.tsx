@@ -1,12 +1,18 @@
 import { getCookie } from '@/lib/headers'
-import AuthProvider from './_auth-provider'
+import RateLimitProvider from './_ratelimit-provider'
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
-  const signupLimit = await getCookie('signup-limit')
+  const signupLimitDate = await getCookie('signup-limit')
+  const resendEmailVerificationDate = await getCookie('resend-email-verification-limit')
 
   return (
-    <AuthProvider values={{ signup: signupLimit ? Number(signupLimit) : null }}>
+    <RateLimitProvider
+      defaultValues={{
+        signup: Number(signupLimitDate || 0),
+        resendEmailVerification: Number(resendEmailVerificationDate || 0),
+      }}
+    >
       <div className="min-h-svh-minusNav flex flex-col items-center justify-center py-5">{children}</div>
-    </AuthProvider>
+    </RateLimitProvider>
   )
 }

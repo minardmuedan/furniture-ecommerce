@@ -4,7 +4,7 @@ import { generateSecureRandomString } from './auth'
 import { deleteCookie, getCookie, getIpAddress, getUserAgent, setCookie } from './headers'
 
 export const SESSION_COOKIE_KEY = 'session'
-const MONTH_IN_MS = 60 * 60 * 24 * 30
+const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30
 
 export async function createSession(userId: string) {
   const id = generateSecureRandomString()
@@ -12,7 +12,7 @@ export async function createSession(userId: string) {
   const userAgent = await getUserAgent()
   const expiresAt = new Date(Date.now() + MONTH_IN_MS)
   await createSessionDb({ id, userId, ipAddress, userAgent, expiresAt })
-  await setCookie(SESSION_COOKIE_KEY, id, { maxAge: MONTH_IN_MS * 1000 })
+  await setCookie(SESSION_COOKIE_KEY, id, { maxAge: MONTH_IN_MS / 1000 })
 }
 
 export const getSession = cache(async () => {
@@ -35,7 +35,7 @@ export const getSession = cache(async () => {
 
   const isSessionHalfMonth = MONTH_IN_MS / 2 + now > session.expiresAt.getTime()
   if (isSessionHalfMonth) {
-    await setCookie(SESSION_COOKIE_KEY, session.id, { maxAge: MONTH_IN_MS * 1000 }).catch(() => {})
+    await setCookie(SESSION_COOKIE_KEY, session.id, { maxAge: MONTH_IN_MS / 1000 }).catch(() => {})
     await updateSessionDb(sessionId, { expiresAt: new Date(now + MONTH_IN_MS) })
   }
 

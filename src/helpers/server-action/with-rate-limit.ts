@@ -1,4 +1,4 @@
-import { createMemoryRateLimiter, disallow, RateLimit } from '@/lib/rate-limiter'
+import { createMemoryRateLimiter, disallow } from '@/lib/rate-limiter'
 import createServerAction from '.'
 import { ActionSuccess } from './type'
 import { getIpAddress, setCookie } from '@/lib/headers'

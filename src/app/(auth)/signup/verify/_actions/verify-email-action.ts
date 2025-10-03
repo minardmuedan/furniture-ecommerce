@@ -8,8 +8,8 @@ import { deleteCookie } from '@/lib/headers'
 import { getSession } from '@/lib/session'
 
 export const verifyEmailAction = createServerAction(async (jwtToken: string) => {
-  const payload = await verifyJWT<{ token: string }>(jwtToken)
-  if (!payload?.token) error({ type: 'custom_error', message: 'Email verification token not found' })
+  const { payload } = await verifyJWT<{ token: string }>(jwtToken)
+  if (!payload) error({ type: 'custom_error', message: 'Email verification token not found' })
 
   const emailVerificationData = await getEmailVerificationByTokenDb(payload.token)
   if (!emailVerificationData) error({ type: 'custom_error', message: 'Email verification token not found' })

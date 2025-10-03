@@ -1,8 +1,8 @@
 import { getEmailVerificationWithUserDb } from '@/database/models/email-verifications'
 import { getCookie } from '@/lib/headers'
 import { notFound } from 'next/navigation'
-import EmailVerificationChecker from './_checker'
-import ResendEmailVerificationButton from './_resend/button'
+import EmailVerificationChecker from './_verification-checker'
+import ResendEmailVerificationButton from './_resend-email-verification/resend-button'
 import { Loader2, Mailbox } from 'lucide-react'
 
 export default async function SignupVerificationPage() {

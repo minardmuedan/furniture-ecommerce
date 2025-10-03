@@ -3,17 +3,18 @@
 import { createUserDb, getUserByEmailDb, updateUserDb } from '@/database/models/users'
 import { error } from '@/helpers/server-action'
 import { createServerActionWithRateLimiter } from '@/helpers/server-action/with-rate-limit'
-import { generateSecureRandomString, hashPassword, signJWT } from '@/lib/auth'
-import { signupSchema } from './_schema'
+import { generateSecureRandomString, hashPassword } from '@/lib/auth'
+import { signupSchema } from './_signup-schema'
 import { createEmailVerificationDb } from '@/database/models/email-verifications'
 import { sendEmailVerificationToken } from '@/lib/mailer'
 import { redirect } from 'next/navigation'
 import { createSession } from '@/lib/session'
 import { setCookie } from '@/lib/headers'
+import { generateToken } from '@/lib/token'
 
 export const signupAction = createServerActionWithRateLimiter(
   async (_attempt, values) => {
-    const { username, email, password } = signupSchema.parse({ email: '' })
+    const { username, email, password } = signupSchema.parse(values)
 
     const existingUser = await getUserByEmailDb(email)
     if (existingUser && existingUser.emailVerified) {
@@ -31,16 +32,13 @@ export const signupAction = createServerActionWithRateLimiter(
     }
 
     const emailVerificationId = generateSecureRandomString()
-    const token = generateSecureRandomString()
     const expiresAt = new Date(Date.now() + 60_000 * 60 * 15) // 15 minutes
+    const { token, jwtToken } = await generateToken()
     await createEmailVerificationDb({ id: emailVerificationId, userId, token, expiresAt })
-
-    await createSession(userId)
-
-    const jwtToken = await signJWT({ token }, 15)
+    await setCookie('signup', emailVerificationId, { maxAge: 60 * 15 })
     await sendEmailVerificationToken(email, jwtToken)
 
-    await setCookie('signup', emailVerificationId, { maxAge: 60 * 15 })
+    await createSession(userId)
     redirect('/signup/verification')
   },
 

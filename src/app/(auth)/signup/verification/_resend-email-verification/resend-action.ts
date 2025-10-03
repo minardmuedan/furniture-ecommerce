@@ -1,14 +1,13 @@
 'use server'
 
-import { getEmailVerificationWithUserDb, updateEmailVerification } from '@/database/models/email-verifications'
+import { getEmailVerificationWithUserDb } from '@/database/models/email-verifications'
 import { error } from '@/helpers/server-action'
 import { createServerActionWithRateLimiter } from '@/helpers/server-action/with-rate-limit'
-import { generateSecureRandomString, signJWT } from '@/lib/auth'
-import { getCookie, setCookie } from '@/lib/headers'
-import { sendEmailVerificationToken } from '@/lib/mailer'
+import { getCookie } from '@/lib/headers'
+import { regenerateSignupTokenHelper } from '../../_regenerate-token-helper'
 
 export const resendEmailVerificationAction = createServerActionWithRateLimiter(
-  async _attempt => {
+  async () => {
     const emailVerificationId = await getCookie('signup')
     if (!emailVerificationId) error({ type: 'custom_error', message: 'Email verification not found' })
 
@@ -17,13 +16,7 @@ export const resendEmailVerificationAction = createServerActionWithRateLimiter(
 
     if (Date.now() > emailVerificationData.expiresAt.getTime()) error({ type: 'custom_error', message: 'Email verification is expired' })
 
-    const token = generateSecureRandomString()
-    const expiresAt = new Date(Date.now() + 60_000 * 60 * 15)
-    await updateEmailVerification(emailVerificationData.id, { token, expiresAt })
-
-    const jwtToken = await signJWT({ token }, 15)
-    await sendEmailVerificationToken(emailVerificationData.user.email, jwtToken)
-    await setCookie('signup', emailVerificationId, { maxAge: 60 * 15 })
+    await regenerateSignupTokenHelper(emailVerificationData.id, emailVerificationData.user)
 
     return { success: true }
   },

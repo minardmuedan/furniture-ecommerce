@@ -1,6 +1,7 @@
 import 'server-only'
 import bcrypt from 'bcryptjs'
 import { JWTPayload, jwtVerify, SignJWT } from 'jose'
+import { JWTExpired, JWTInvalid } from 'jose/errors'
 
 export function generateSecureRandomString(length = 24) {
   const alphabet = 'abcdefghijkmnpqrstuvwxyz23456789'
@@ -23,17 +24,17 @@ export const verifyPassword = async (password: string, hashedPassword: string) =
 // jwt
 
 const JWT_KEY = new TextEncoder().encode(process.env.JWT_KEY)
-export const signJWT = async (payload: JWTPayload, expiresInMinute?: number) => {
+
+export async function signJWT(payload: JWTPayload, expiresInMinute?: number) {
   const jwt = new SignJWT(payload).setProtectedHeader({ alg: 'HS256' })
   if (expiresInMinute) jwt.setExpirationTime(`${expiresInMinute}m`)
   return jwt.sign(JWT_KEY)
 }
 
-export const verifyJWT = async <T>(jwt: string) => {
-  try {
-    const verifiedJwt = await jwtVerify(jwt, JWT_KEY, { algorithms: ['HS256'] })
-    return verifiedJwt.payload as T
-  } catch {
-    return null
-  }
+export async function verifyJWT<T>(jwt: string): Promise<{ payload: T | null; reason?: 'expired' | 'invalid' | 'unknown' }> {
+  return await jwtVerify<T>(jwt, JWT_KEY, { algorithms: ['HS256'] }).catch(err => {
+    if (err instanceof JWTExpired) return { payload: err.payload as T, reason: 'expired' }
+    if (err instanceof JWTInvalid) return { payload: null, reason: 'invalid' }
+    return { payload: null, reason: 'unknown' }
+  })
 }

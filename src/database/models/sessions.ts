@@ -14,3 +14,4 @@ export const updateSessionDb = async (id: string, values: Partial<typeof session
   await db.update(sessionsTable).set(values).where(eq(sessionsTable.id, id))
 
 export const deleteSessionDb = async (id: string) => await db.delete(sessionsTable).where(eq(sessionsTable.id, id))
+export const deleteUserSessions = async (userId: string) => await db.delete(sessionsTable).where(eq(sessionsTable.userId, userId))
