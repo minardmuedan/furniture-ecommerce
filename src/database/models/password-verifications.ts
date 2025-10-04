@@ -19,3 +19,6 @@ export const updatePasswordVerificationDb = async (id: string, values: Partial<t
 
 export const deletePasswordVerificationDb = async (id: string) =>
   await db.delete(passwordVerificationsTable).where(eq(passwordVerificationsTable.id, id))
+
+export const deleteUserPasswordVerificationsDb = async (userId: string) =>
+  await db.delete(passwordVerificationsTable).where(eq(passwordVerificationsTable.userId, userId))

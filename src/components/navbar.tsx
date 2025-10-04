@@ -71,7 +71,7 @@ export default function Navbar() {
       {isGettingUser ? (
         <p className="text-muted-foreground text-sm">getting the user ...</p>
       ) : (
-        <div className="flex gap-1">
+        <div className="flex items-center gap-1">
           {user ? (
             <>
               <p className="text-muted-foreground text-sm">hello, {user.username}</p>

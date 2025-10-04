@@ -21,6 +21,6 @@ export const verifyEmailAction = createServerAction(async (jwtToken: string) => 
   const { session } = await getSession()
   if (session) return { success: true, message: `Email verified successful — welcome, ${session.user.username}` }
 
-  await setCookie('login', 'initial', { maxAge: 60 * 15 })
+  await setCookie('login', 'initial', { maxAge: 60 * 5 })
   return { success: true, message: 'Email verified successfully, Please login', redirectTo: '/login' }
 })

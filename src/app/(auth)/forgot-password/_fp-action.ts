@@ -1,6 +1,10 @@
 'use server'
 
-import { createPasswordVerificationDb } from '@/database/models/password-verifications'
+import {
+  createPasswordVerificationDb,
+  deletePasswordVerificationDb,
+  deleteUserPasswordVerificationsDb,
+} from '@/database/models/password-verifications'
 import { getUserByEmailDb } from '@/database/models/users'
 import { error } from '@/helpers/server-action'
 import { createServerActionWithRateLimiter } from '@/helpers/server-action/with-rate-limit'
@@ -23,6 +27,7 @@ export const forgotPasswordAction = createServerActionWithRateLimiter(
     await createPasswordVerificationDb({ id: passwordVerificationId, userId: user.id, token, expiresAt })
 
     await sendPasswordVerificationToken(email, jwtToken)
+    await deleteUserPasswordVerificationsDb(user.id)
 
     await setCookie('forgot-password', passwordVerificationId, { maxAge: 60 * 15 })
     await setCookie('resend-password-verification-limit', `${Date.now() + 1000 * 30}`, { maxAge: 30 })

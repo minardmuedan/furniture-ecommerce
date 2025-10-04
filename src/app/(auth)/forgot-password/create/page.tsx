@@ -36,7 +36,7 @@ export default async function ChangePasswordPage({ searchParams }: { searchParam
     )
 
   return (
-    <Card className="w-full border-0 shadow-none sm:max-w-md">
+    <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Create new password</CardTitle>
         <CardDescription>Fill up the credentials to change your password</CardDescription>

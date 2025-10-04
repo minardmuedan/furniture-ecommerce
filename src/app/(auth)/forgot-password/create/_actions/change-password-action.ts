@@ -7,6 +7,7 @@ import { createServerActionWithRateLimiter } from '@/helpers/server-action/with-
 import { hashPassword, verifyJWT } from '@/lib/auth'
 import { deleteCookie } from '@/lib/headers'
 import { createPasswordSchema } from '../_password-schema'
+import { deleteUserSessions } from '@/database/models/sessions'
 
 export const changePasswordAction = createServerActionWithRateLimiter(
   async (_attempt, jwtToken: string, values) => {
@@ -22,6 +23,7 @@ export const changePasswordAction = createServerActionWithRateLimiter(
     await updateUserDb(passwordVerificationData.userId, { password: hashedPassword, updatedAt: new Date() })
 
     await deletePasswordVerificationDb(passwordVerificationData.id)
+    await deleteUserSessions(passwordVerificationData.userId)
     await deleteCookie('forgot-password')
 
     return { success: true, message: 'Password changed successfully! Login to try' }
