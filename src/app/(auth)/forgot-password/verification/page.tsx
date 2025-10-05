@@ -4,7 +4,7 @@ import { Mailbox } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import ResendPasswordVerificationButton from './_resend-password-verification/resend-button'
 
-export default async function SignupVerificationPage() {
+export default async function ForgotPasswordVerificationPage() {
   const passwordVerificationId = await getCookie('forgot-password')
   if (!passwordVerificationId) notFound()
 

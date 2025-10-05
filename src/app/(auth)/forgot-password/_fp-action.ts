@@ -20,14 +20,13 @@ export const forgotPasswordAction = createServerActionWithRateLimiter(
     const user = await getUserByEmailDb(email)
     if (!user) error({ type: 'custom_error', message: 'User not found! Please try again' })
     if (!user.emailVerified) error({ type: 'validation_error', fields: { email: 'Email is not yet verified! Please signup' } })
+    await deleteUserPasswordVerificationsDb(user.id)
 
     const passwordVerificationId = generateSecureRandomString()
-    const expiresAt = new Date(Date.now() + 60_000 * 15) // 15 minutes
-    const { token, jwtToken } = await generateToken()
+    const { token, jwtToken, expiresAt } = await generateToken()
     await createPasswordVerificationDb({ id: passwordVerificationId, userId: user.id, token, expiresAt })
 
     await sendPasswordVerificationToken(email, jwtToken)
-    await deleteUserPasswordVerificationsDb(user.id)
 
     await setCookie('forgot-password', passwordVerificationId, { maxAge: 60 * 15 })
     await setCookie('resend-password-verification-limit', `${Date.now() + 1000 * 30}`, { maxAge: 30 })

@@ -31,8 +31,7 @@ export const signupAction = createServerActionWithRateLimiter(
     }
 
     const emailVerificationId = generateSecureRandomString()
-    const expiresAt = new Date(Date.now() + 60_000 * 15) // 15 minutes
-    const { token, jwtToken } = await generateToken()
+    const { token, jwtToken, expiresAt } = await generateToken()
     await createEmailVerificationDb({ id: emailVerificationId, userId, token, expiresAt })
 
     await sendEmailVerificationToken(email, jwtToken)
