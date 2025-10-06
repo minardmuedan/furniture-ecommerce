@@ -16,7 +16,7 @@ export const generateEmailVerificationTokenAction = createServerAction(async (em
   await regenerateSignupTokenHelper(emailVerificationData.id, emailVerificationData.user)
 
   await deleteUserSessions(emailVerificationData.user.id)
-  await createSession(emailVerificationData.user.id)
+  await createSession(emailVerificationData.user.id, { temporary: true })
 
   await setCookie('resend-email-verification-limit', `${Date.now() + 1000 * 30}`, { maxAge: 30 })
 

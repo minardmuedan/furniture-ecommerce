@@ -1,11 +1,11 @@
 'use client'
 
-import { useRateLimitContext } from '@/app/(auth)/_ratelimit-provider'
 import { Button } from '@/components/ui/button'
 import { useMutation } from '@tanstack/react-query'
 import { RotateCcw } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { useRateLimitContext } from '../../../_ratelimit-provider'
 import { generatePasswordVerificationTokenAction } from '../_actions/generate-token-action'
 
 export default function GeneratePasswordVerificationTokenButton({ passwordVerificationId }: { passwordVerificationId: string }) {

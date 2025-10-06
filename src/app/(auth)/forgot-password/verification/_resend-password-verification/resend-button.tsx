@@ -1,11 +1,12 @@
 'use client'
 
-import RateLimitButton from '@/app/(auth)/_ratelimit-button'
-import { useRateLimitContext } from '@/app/(auth)/_ratelimit-provider'
+import { Spinner } from '@/components/ui/spinner'
 import { useMutation } from '@tanstack/react-query'
-import { Loader2, Send } from 'lucide-react'
+import { Send } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import RateLimitButton from '../../../_ratelimit-button'
+import { useRateLimitContext } from '../../../_ratelimit-provider'
 import { resendPasswordVerificationAction } from './resend-action'
 
 export default function ResendPasswordVerificationButton() {
@@ -28,7 +29,7 @@ export default function ResendPasswordVerificationButton() {
   })
   return (
     <RateLimitButton auth="resendPasswordVerification" rateLimitMsg="Resend after" disabled={isPending} onClick={() => mutate()}>
-      Resend Link {isPending ? <Loader2 className="animate-spin" /> : <Send />}
+      Resend Link {isPending ? <Spinner /> : <Send />}
     </RateLimitButton>
   )
 }

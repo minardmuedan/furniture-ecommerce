@@ -30,7 +30,7 @@ export const loginAction = createServerActionWithRateLimiter(
     await createSession(user.id)
 
     if (isInitialLoginAttempt) return { success: true, message: `Welcome, ${user.username}! Lets get you started` }
-    return { success: true, message: `Good to see you again, ${user.username}` }
+    return { success: true, message: `Good to see you again, ${user.username}`, redirectTo: user.isAdmin ? '/dashboard' : undefined }
   },
   { key: 'login-limit', maxAttempts: 12, refill: { refilledAttempt: 6, perSeconds: 60 }, withCookie: true },
 )

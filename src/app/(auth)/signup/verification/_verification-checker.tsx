@@ -11,14 +11,15 @@ type ApiReturnType = { continue: false; success: boolean; message: string } | { 
 export default function EmailVerificationChecker() {
   const router = useRouter()
   const queryClient = useQueryClient()
-  const { data } = useQuery<ApiReturnType>({
+  const { data, isStale } = useQuery<ApiReturnType>({
     queryKey: ['check-verification'],
     queryFn: async () => await clientFetch('/auth/check-verification'),
+    staleTime: 5000,
     refetchInterval: ({ state: { data } }) => (data?.continue === false ? false : 3000),
   })
 
   useEffect(() => {
-    if (data && data.continue === false) {
+    if (!isStale && data && data.continue === false) {
       if (!data.success) {
         toast.error(data.message)
         return router.replace('/login')

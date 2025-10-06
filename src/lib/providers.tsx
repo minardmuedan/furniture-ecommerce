@@ -11,7 +11,9 @@ declare module '@tanstack/react-query' {
   }
 }
 
-const queryClient = new QueryClient({ defaultOptions: { queries: { staleTime: () => Infinity } } })
+const queryClient = new QueryClient({
+  defaultOptions: { queries: { staleTime: () => Infinity } },
+})
 
 export function TanstackQueryProvider({ children }: { children: React.ReactNode }) {
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>

@@ -1,10 +1,6 @@
 'use server'
 
-import {
-  createPasswordVerificationDb,
-  deletePasswordVerificationDb,
-  deleteUserPasswordVerificationsDb,
-} from '@/database/models/password-verifications'
+import { createPasswordVerificationDb, deleteUserPasswordVerificationsDb } from '@/database/models/password-verifications'
 import { getUserByEmailDb } from '@/database/models/users'
 import { error } from '@/helpers/server-action'
 import { createServerActionWithRateLimiter } from '@/helpers/server-action/with-rate-limit'

@@ -38,7 +38,7 @@ export default function LoginForm() {
     } else {
       queryClient.invalidateQueries({ queryKey: ['session'] })
       toast.success(action.message, { icon: '👋' })
-      router.replace('/')
+      router.replace(action.redirectTo ?? '/')
     }
   }
 

@@ -21,7 +21,7 @@ export const sessionsTable = pgTable('sessions', {
   ipAddress: varchar('ip_address'),
   userAgent: varchar('user_agent'),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  expiresAt: timestamp('updated_at').notNull(),
+  expiresAt: timestamp('expires_at').notNull(),
 })
 
 export const sessionRelations = relations(sessionsTable, ({ one }) => ({

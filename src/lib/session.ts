@@ -4,15 +4,19 @@ import { generateSecureRandomString } from './auth'
 import { deleteCookie, getCookie, getIpAddress, getUserAgent, setCookie } from './headers'
 
 export const SESSION_COOKIE_KEY = 'session'
+export const TEMP_SESSION_COOKIE_KEY = `temp-${SESSION_COOKIE_KEY}`
 const MONTH_IN_MS = 1000 * 60 * 60 * 24 * 30
 
-export async function createSession(userId: string) {
+export const createSessionCookie = async (sessionId: string) => await setCookie(SESSION_COOKIE_KEY, sessionId, { maxAge: MONTH_IN_MS / 1000 })
+
+export async function createSession(userId: string, opt?: { temporary: boolean }) {
   const id = generateSecureRandomString()
   const ipAddress = await getIpAddress()
   const userAgent = await getUserAgent()
   const expiresAt = new Date(Date.now() + MONTH_IN_MS)
   await createSessionDb({ id, userId, ipAddress, userAgent, expiresAt })
-  await setCookie(SESSION_COOKIE_KEY, id, { maxAge: MONTH_IN_MS / 1000 })
+  if (opt?.temporary) await setCookie(TEMP_SESSION_COOKIE_KEY, id, { maxAge: 60 * 15 })
+  else await createSessionCookie(id)
 }
 
 export const getSession = cache(async () => {
@@ -20,11 +24,10 @@ export const getSession = cache(async () => {
   if (!sessionId) return { session: null }
 
   const session = await getSessionWithUserDb(sessionId)
-  if (!session) {
+  if (!session || !session.user.emailVerified) {
     await deleteCookie(SESSION_COOKIE_KEY).catch(() => {})
     return { session: null }
   }
-  if (!session.user.emailVerified) return { session: null, reason: 'unverified_email' as const }
 
   const now = Date.now()
   if (now > session.expiresAt.getTime()) {

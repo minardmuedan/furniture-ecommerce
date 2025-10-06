@@ -2,8 +2,9 @@
 
 import RateLimitButton from '@/app/(auth)/_ratelimit-button'
 import { useRateLimitContext } from '@/app/(auth)/_ratelimit-provider'
+import { Spinner } from '@/components/ui/spinner'
 import { useMutation } from '@tanstack/react-query'
-import { Loader2, Send } from 'lucide-react'
+import { Send } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { resendEmailVerificationAction } from './resend-action'
@@ -28,7 +29,7 @@ export default function ResendEmailVerificationButton() {
   })
   return (
     <RateLimitButton auth="resendEmailVerification" rateLimitMsg="Resend after" disabled={isPending} onClick={() => mutate()}>
-      Resend Link {isPending ? <Loader2 className="animate-spin" /> : <Send />}
+      Resend Link {isPending ? <Spinner /> : <Send />}
     </RateLimitButton>
   )
 }

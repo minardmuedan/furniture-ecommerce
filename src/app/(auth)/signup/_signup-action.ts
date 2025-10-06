@@ -35,7 +35,7 @@ export const signupAction = createServerActionWithRateLimiter(
     await createEmailVerificationDb({ id: emailVerificationId, userId, token, expiresAt })
 
     await sendEmailVerificationToken(email, jwtToken)
-    await createSession(userId)
+    await createSession(userId, { temporary: true })
 
     await setCookie('signup', emailVerificationId, { maxAge: 60 * 15 })
     await setCookie('resend-email-verification-limit', `${Date.now() + 1000 * 30}`, { maxAge: 30 })
