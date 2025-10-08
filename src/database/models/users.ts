@@ -9,5 +9,11 @@ export const getUserByEmailDb = async (email: string) =>
     where: (user, { eq }) => eq(user.email, email),
   })
 
+export const getUsersDb = async () =>
+  await db.query.usersTable.findMany({
+    columns: { password: false, isAdmin: false },
+    where: (user, { or, eq, isNull }) => or(eq(user.isAdmin, false), isNull(user.isAdmin)),
+  })
+
 export const updateUserDb = async (id: string, values: Partial<typeof usersTable.$inferInsert>) =>
   await db.update(usersTable).set(values).where(eq(usersTable.id, id))

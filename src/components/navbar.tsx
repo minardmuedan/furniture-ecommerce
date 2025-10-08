@@ -1,6 +1,5 @@
 'use client'
 
-import LogoutButton from '@/app/(auth)/_logout/logout-button'
 import { ButtonLink } from '@/components/ui/button'
 import { useAuth } from '@/hooks/use-auth'
 import { useIsActivePath } from '@/hooks/use-path'
@@ -11,12 +10,13 @@ import { Skeleton } from './ui/skeleton'
 import UserNav from './user-nav'
 
 export default function Navbar() {
-  const isActive = useIsActivePath()
+  const { pathname, isActivePath } = useIsActivePath()
   const { user, isGettingUser } = useAuth()
 
+  if (pathname.startsWith('/admin')) return null
   return (
-    <header className="user-header flex h-14 w-full items-center justify-between border-b px-5">
-      <Link href="/" className={!isActive('/') ? 'opacity-75 transition-opacity ease-out hover:opacity-100' : 'opacity-100'}>
+    <header className="flex h-14 w-full items-center justify-between border-b px-5">
+      <Link href="/" className={!isActivePath('/') ? 'opacity-75 transition-opacity ease-out hover:opacity-100' : 'opacity-100'}>
         <Image src="/plant-logo.svg" height={30} width={30} alt="plant logo" />
         <span className="sr-only">Home</span>
       </Link>

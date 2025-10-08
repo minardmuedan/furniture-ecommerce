@@ -2,5 +2,8 @@ import { usePathname } from 'next/navigation'
 
 export function useIsActivePath() {
   const pathname = usePathname()
-  return (path: string) => pathname === path
+  return {
+    pathname,
+    isActivePath: (path: string) => pathname === path,
+  }
 }
