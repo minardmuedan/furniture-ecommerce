@@ -1,5 +1,5 @@
-import { logoutAction } from '@/app/(auth)/_logout/logout-action'
 import { clientFetch } from '@/helpers/client-fetcher'
+import { logoutAction } from '@auth/_logout/logout-action'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'

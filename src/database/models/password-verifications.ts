@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { db } from '..'
-import { passwordVerificationsTable } from '../schema'
+import { passwordVerificationsTable } from '../schemas/password-verifications'
 
 export const createPasswordVerificationDb = async (values: typeof passwordVerificationsTable.$inferInsert) =>
   await db.insert(passwordVerificationsTable).values(values)

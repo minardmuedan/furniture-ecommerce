@@ -4,10 +4,12 @@ import * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-function Table({ className, ...props }: React.ComponentProps<'table'>) {
+function Table({ className, disabled, ...props }: React.ComponentProps<'table'> & { disabled?: boolean }) {
   return (
-    <div data-slot="table-container" className="relative w-full overflow-x-auto">
-      <table data-slot="table" className={cn('w-full caption-bottom text-sm', className)} {...props} />
+    <div className={`${disabled ? 'pointer-events-none opacity-50' : ''} overflow-hidden rounded-md border`}>
+      <div data-slot="table-container" className="relative w-full overflow-x-auto">
+        <table data-slot="table" aria-disabled={disabled} className={cn('w-full caption-bottom text-sm', className)} {...props} />
+      </div>
     </div>
   )
 }
@@ -35,7 +37,7 @@ function TableHead({ className, ...props }: React.ComponentProps<'th'>) {
     <th
       data-slot="table-head"
       className={cn(
-        'text-foreground relative h-10 overflow-x-hidden border-r px-2 text-left align-middle font-medium text-ellipsis whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+        'text-foreground relative h-10 overflow-x-hidden px-2 text-left align-middle font-medium text-ellipsis whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
         className,
       )}
       {...props}
@@ -48,7 +50,7 @@ function TableCell({ className, ...props }: React.ComponentProps<'td'>) {
     <td
       data-slot="table-cell"
       className={cn(
-        'overflow-x-hidden border-r p-2 align-middle text-ellipsis whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
+        'overflow-x-hidden p-2 align-middle text-ellipsis whitespace-nowrap [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]',
         className,
       )}
       {...props}
@@ -60,10 +62,10 @@ function TableCaption({ className, ...props }: React.ComponentProps<'caption'>) 
   return <caption data-slot="table-caption" className={cn('text-muted-foreground mt-4 text-sm', className)} {...props} />
 }
 
-function TableNoResult({ columnLength }: { columnLength: number }) {
+function TableNoResult() {
   return (
     <TableRow className="hover:bg-background">
-      <TableCell colSpan={columnLength} className="h-28 text-center">
+      <TableCell colSpan={20} className="h-28 text-center">
         no results
       </TableCell>
     </TableRow>

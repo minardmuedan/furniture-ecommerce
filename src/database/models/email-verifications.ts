@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { db } from '..'
-import { emailVerificationsTable } from '../schema'
+import { emailVerificationsTable } from '../schemas/email-verifications'
 
 export const createEmailVerificationDb = async (values: typeof emailVerificationsTable.$inferInsert) =>
   await db.insert(emailVerificationsTable).values(values)

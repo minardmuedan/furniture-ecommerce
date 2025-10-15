@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { db } from '..'
-import { sessionsTable } from '../schema'
+import { sessionsTable } from '../schemas/sessions'
 
 export const createSessionDb = async (values: typeof sessionsTable.$inferInsert) => await db.insert(sessionsTable).values(values)
 

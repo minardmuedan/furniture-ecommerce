@@ -13,7 +13,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar'
 import { useIsActivePath } from '@/hooks/use-path'
-import { Calendar, LayoutDashboard, Package, Search, Settings, User2 } from 'lucide-react'
+import { LayoutDashboard, Package, Search, Settings, TestTube2, User2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -26,6 +26,7 @@ export default function AdminSidebar() {
     { title: 'Users', href: '/admin/users', icon: User2 },
     { title: 'Search', href: '#', icon: Search },
     { title: 'Settings', href: '/admin/settings', icon: Settings },
+    { title: 'Tests', href: '/admin/tests', icon: TestTube2 },
   ]
 
   return (

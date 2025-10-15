@@ -1,14 +1,14 @@
 import { getUsersDb } from '@/database/models/users'
-import AdminUsersTable from './_users-table'
+import Users from './_users-data'
 
 export default async function AdminUsersPage() {
-  const users = await getUsersDb()
+  const initialUsersData = await getUsersDb({})
 
   return (
     <>
-      <h1 className="text-muted-foreground mb-4 font-medium">Users</h1>
+      <h1 className="mb-4 font-medium">Users</h1>
 
-      <AdminUsersTable initialUser={users} />
+      <Users initialUsersData={initialUsersData} />
     </>
   )
 }

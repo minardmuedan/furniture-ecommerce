@@ -84,3 +84,5 @@ const categories = baseCategories.map(category => ({
 }))
 
 export default categories
+export type Category = (typeof baseCategories)[number]['title']
+export type SubCategory = (typeof baseCategories)[number]['subcategories'][number]['title']

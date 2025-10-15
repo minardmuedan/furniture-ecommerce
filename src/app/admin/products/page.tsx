@@ -1,11 +1,14 @@
-import ProductTable from './_product-table'
+import { getProductsDb } from '@/database/models/products'
+import Products from './_products-data'
 
-export default function ProductPage() {
+export default async function AdminProductsPage() {
+  const initialProductsData = await getProductsDb({})
+
   return (
     <>
-      <h1 className="text-muted-foreground mb-4 font-medium">Products</h1>
+      <h1 className="mb-4 font-medium">Products</h1>
 
-      <ProductTable />
+      <Products initialProductsData={initialProductsData} />
     </>
   )
 }

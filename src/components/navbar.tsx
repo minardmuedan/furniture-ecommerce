@@ -10,10 +10,16 @@ import { Skeleton } from './ui/skeleton'
 import UserNav from './user-nav'
 
 export default function Navbar() {
-  const { pathname, isActivePath } = useIsActivePath()
-  const { user, isGettingUser } = useAuth()
-
+  const { pathname } = useIsActivePath()
   if (pathname.startsWith('/admin')) return null
+
+  return <NotAdminNavbar />
+}
+
+function NotAdminNavbar() {
+  const { isActivePath } = useIsActivePath()
+
+  const { user, isGettingUser } = useAuth()
   return (
     <header className="flex h-14 w-full items-center justify-between border-b px-5">
       <Link href="/" className={!isActivePath('/') ? 'opacity-75 transition-opacity ease-out hover:opacity-100' : 'opacity-100'}>
