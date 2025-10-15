@@ -77,7 +77,7 @@ export default function useAdminClientData<TData extends { id: string }>({
     },
     getNextPageParam: ({ hasNextPage }, _aP, lastPageParam) => (hasNextPage ? lastPageParam + 1 : null),
     placeholderData: prevData => prevData,
-    enabled: noMoreDataInDb ? false : completedDataSearches.includes(debouncedSearch) ? false : true,
+    enabled: noMoreDataInDb ? false : true,
   })
 
   const { datas, totalDatas } = useMemo(() => {
@@ -91,7 +91,8 @@ export default function useAdminClientData<TData extends { id: string }>({
     if (!noMoreDataInDb && datas.length >= totalDatas) {
       if (debouncedSearch) return setCompletedDataSearches(prev => (prev.includes(debouncedSearch) ? prev : [...prev, debouncedSearch]))
       setNoMoreDataInDb(true)
-      queryClient.removeQueries({ queryKey: [key] })
+      queryClient.removeQueries()
+      queryClient.setQueryData<ReactInfiniteData<InfiniteData<TData>>>(queryKey, infiniteQuery.data)
     }
   }, [datas, totalDatas])
 
@@ -103,7 +104,7 @@ export default function useAdminClientData<TData extends { id: string }>({
     getCoreRowModel: getCoreRowModel(),
 
     onSortingChange: setSorting,
-    getSortedRowModel: infiniteQuery.isEnabled ? undefined : getSortedRowModel(),
+    getSortedRowModel: infiniteQuery.isEnabled || completedDataSearches.includes(debouncedSearch) ? undefined : getSortedRowModel(),
 
     manualFiltering: noMoreDataInDb ? false : true,
     onGlobalFilterChange: setSearch,

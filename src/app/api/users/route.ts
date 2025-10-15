@@ -1,11 +1,11 @@
-import { getUsersDb } from '@/database/models/users'
+import { getUsersDb, UsersDbOrderBy } from '@/database/models/users'
 import { NextRequest, NextResponse } from 'next/server'
 
-const allowedColumns = ['username', 'emailVerified', 'createdAt', 'updatedAt'] as const
-const allowedOrders = ['asc', 'desc'] as const
+const allowedColumns: UsersDbOrderBy['column'][] = ['username', 'createdAt', 'updatedAt']
+const allowedOrders: UsersDbOrderBy['order'][] = ['asc', 'desc']
 
-type Column = (typeof allowedColumns)[number]
-type Order = (typeof allowedOrders)[number]
+type Column = UsersDbOrderBy['column']
+type Order = UsersDbOrderBy['order']
 
 export async function GET(req: NextRequest) {
   const search = req.nextUrl.searchParams.get('search')

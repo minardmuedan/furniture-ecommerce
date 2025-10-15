@@ -1,11 +1,11 @@
-import { getProductsDb } from '@/database/models/products'
+import { getProductsDb, ProductsDbOrderBy } from '@/database/models/products'
 import { NextRequest, NextResponse } from 'next/server'
 
-const allowedColumns = ['title', 'createdAt', 'updatedAt', 'price', 'stocks'] as const
-const allowedOrders = ['asc', 'desc'] as const
+const allowedColumns: ProductsDbOrderBy['column'][] = ['title', 'createdAt', 'updatedAt', 'price', 'stocks']
+const allowedOrders: ProductsDbOrderBy['order'][] = ['asc', 'desc']
 
-type Column = (typeof allowedColumns)[number]
-type Order = (typeof allowedOrders)[number]
+type Column = ProductsDbOrderBy['column']
+type Order = ProductsDbOrderBy['order']
 
 export async function GET(req: NextRequest) {
   const search = req.nextUrl.searchParams.get('search')

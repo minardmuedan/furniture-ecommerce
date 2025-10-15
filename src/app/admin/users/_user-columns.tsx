@@ -4,8 +4,11 @@ import { SortableButton } from '@/components/custom-table'
 
 export const userColumns: ColumnDef<User>[] = [
   { accessorKey: 'id', header: 'id' },
+
   { accessorKey: 'username', header: ({ column }) => <SortableButton label="username" column={column} /> },
+
   { accessorKey: 'email', header: 'email' },
+
   {
     meta: { label: 'img' },
     accessorKey: 'avatarSrc',
@@ -23,29 +26,25 @@ export const userColumns: ColumnDef<User>[] = [
       )
     },
   },
+
   {
     meta: { label: 'verified' },
     accessorKey: 'emailVerified',
-    header: ({ column }) => <SortableButton label="verified" column={column} />,
+    header: 'verified',
     cell: ({ cell }) => {
       const emailVerified = cell.getValue<Date | null>()
       if (!emailVerified) return <span className="text-muted-foreground text-sm">unverified</span>
       return <div>{emailVerified.toLocaleDateString('en-US', { hour12: false })}</div>
     },
-    sortingFn: (a, b, id) => {
-      const va = a.getValue(id),
-        vb = b.getValue(id)
-      if (va == null) return 1
-      if (vb == null) return -1
-      return va > vb ? 1 : va < vb ? -1 : 0
-    },
   },
+
   {
     meta: { label: 'created at' },
     accessorKey: 'createdAt',
     header: ({ column }) => <SortableButton label="created at" column={column} />,
     cell: ({ cell }) => <div>{cell.getValue<Date>().toLocaleDateString('en-US', { hour12: false })}</div>,
   },
+
   {
     meta: { label: 'updated at' },
     accessorKey: 'updatedAt',

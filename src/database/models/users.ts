@@ -9,14 +9,13 @@ export const getUserByEmailDb = async (email: string) =>
     where: (user, { eq }) => eq(user.email, email),
   })
 
+export type UsersDbOrderBy = { column: keyof Pick<typeof usersTable.$inferSelect, 'username' | 'createdAt' | 'updatedAt'>; order: 'asc' | 'desc' }
+
 type Option = {
   search?: string | null
   page?: number
   perPage?: number
-  orderBy?: {
-    column: keyof Pick<typeof usersTable.$inferSelect, 'username' | 'emailVerified' | 'createdAt' | 'updatedAt'>
-    order: 'asc' | 'desc'
-  }
+  orderBy?: UsersDbOrderBy
 }
 
 export async function getUsersDb({ search, page = 1, perPage = 20, orderBy = { column: 'createdAt', order: 'desc' } }: Option) {
