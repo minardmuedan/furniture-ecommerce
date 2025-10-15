@@ -31,13 +31,7 @@ export async function getUsersDb({ search, page = 1, perPage = 20, orderBy = { c
     limit: perPage,
     offset: (page - 1) * perPage,
     where,
-    orderBy: (users, { asc, desc, sql }) => {
-      if (orderBy.order === 'asc') {
-        return sql`${asc(users[orderBy.column])} NULLS LAST`
-      } else {
-        return sql`${desc(users[orderBy.column])} NULLS LAST`
-      }
-    },
+    orderBy: (user, helper) => helper[orderBy.order](user[orderBy.column]),
   })
   const getTotalUsers = db.$count(usersTable, where)
 
